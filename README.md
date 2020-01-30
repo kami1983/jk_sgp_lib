@@ -76,3 +76,82 @@ ITEM_PIPELINES = {
 }
 ```
 
+### spider 支持页面变化检测功能
+* 需求源自被抓取页面的变化，举例来说，如果我们要抓取一个页面的表格，当前表头列如下：
+```
+
+时间、温度、湿度、区域
+2012、28、70、北京
+2011、30、75、北京
+
+```
+* 但是某一天数据发生了一点点小变化，哪怕是仅仅是数据列发生了变化：
+```
+
+时间、湿度、温度、区域
+2012、70、28、北京
+2011、75、30、北京
+
+```
+* 这种简单的变化可能让scrapy 抓取到脏数据，而且脏数据可能录入到更深层的数据存储系统中，清理起来是十分麻烦的。
+* AbsJKSGPSpider 可以检测这种变化并及时停止Scrapy 的工作。
+* 其实实现原理非常简单，我们可以对不变化的部分进行检测，对于上面的数据来说不应该变化的应该就是表头了，也就是说表头发送变化那么就认为表格发生了本质的变化，AbsJKSGPSpider 做了基础的对比实现，可以在检测到变化的时候终止爬虫运行。
+* 头部需要引入如下内容：
+```
+# 注意如果需要数据库直接写入支持 YourItem 应该是 CJKSGPItem 类的子类
+from ..items import YourItem 
+# 引入 AbsJKSGPSpider 抽象类
+from jk_sgp_lib.spiders.AbsJKSGPSpider import AbsJKSGPSpider
+```
+* 在spiders 目录下创建爬虫文件，比如 yourspider.py
+```
+class YourSpider(AbsJKSGPSpider):
+    
+    name = "your_spider"
+    allowed_domains = ["aim.spider.com"]
+    start_urls = [
+        "http://aim.spider.com/data.html"
+    ]
+
+    def parseItems(self, response):
+        '''
+        解析数据项，通过yield 关键字返回对应数据，这个方法是抽象类的抽象方法
+        '''
+        print("解析操作，这个必须实现，这是个一个抽象方法。")
+
+        # 举例：
+        # # 提取所有数据列的TR数据
+        # data_tr_list = response.xpath('//*[@id="pane1"]/div[5]/table/tbody/tr')
+        # # print(type(data_tr_list))
+        # for data_tr in data_tr_list :
+        #     # print(data_tr.xpath('td/text()').extract()[0]) 
+        #     # print(data_tr.xpath('td/text()').extract()[1])
+        #     item = YourItem(tgroup = self.name )
+        #     item['s_month'] = data_tr.xpath('td/text()').extract()[0] # 月份
+        #     # 如果写入数据写入一个唯一的数据库标识很重要，这个会和t_group 组成唯一索引
+        #     item.setDbSignKey(item['s_month'])
+        #     yield item
+
+    def initPageIdenInfo(self) :
+        
+        '''
+        初始化页面标识信息，通过类内容方法：self.appendCheckInfo(checkxpath, checkcontent) 实现
+        参数1：checkxpath 是页面匹配的xpath。
+        参数2：checkcontent 是页面匹配的内容值，也就是xpath 解析的内容。
+        return void()
+        '''
+
+        # 表头核验，如果表头发生任何变化，那么程序就会在写入数据库之前卡主，避免脏数据的写入。
+        self.appendCheckInfo('//*[@id="pane1"]/div[5]/table/tr[1]', '''<tr class="bg_lan bold">
+					    <td rowspan="2">时间</td>
+					    <td colspan="3">温度</td>
+					    <td colspan="3">湿度</td>
+					    <td colspan="3">区域</td>
+					</tr>''')
+        
+
+```
+
+## 一个爬取的实例
+
+* 我稍后准备，并且更新到github 上面，以供参考。
