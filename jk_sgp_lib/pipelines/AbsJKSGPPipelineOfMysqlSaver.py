@@ -4,6 +4,7 @@
 # import json
 # import hashlib
 import pymysql
+import pytz
 import time
 import datetime
 # import sys
@@ -48,6 +49,8 @@ class AbsJKSGPPipelineOfMysqlSaver(object):
         cls.PORT = crawler.settings.get("MYSQL_PORT", 3306)
         cls.USER = crawler.settings.get("MYSQL_USER", 'default_none')
         cls.PASSWD = crawler.settings.get("MYSQL_PASSWORD", 'default_none')
+        # 新增一个时区设置，并且增加默认时区
+        cls.TIMEZONE = crawler.settings.get("TIMEZONE", 'Asia/Shanghai')
         return cls()
 
     def open_spider(self, spider):
@@ -84,8 +87,9 @@ class AbsJKSGPPipelineOfMysqlSaver(object):
         if not(isinstance(item, CJKSGPItem)) :
             raise Exception('item 参数必须为 CJKSGPItem 类或其子类，否则会导致数据库插入失败！')
 
+        currenttime = datetime.datetime.now(pytz.timezone(self.TIMEZONE)).strftime('%Y-%m-%d %H:%M:%S')
         #currenttime = datetime.datetime.now(-8).strftime('%Y-%m-%d %H:%M:%S')
-        currenttime = time.strftime("%Y-%m-%d %H:%M:%S") 
+        # currenttime = time.strftime("%Y-%m-%d %H:%M:%S") 
 
         # 要执行的SQL 语句
         execsql = '''

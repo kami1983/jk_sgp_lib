@@ -7,7 +7,7 @@ import hashlib
 # import pymysql
 # import time
 # import datetime
-# import sys
+
 
 class CJKSGPItem(scrapy.Item):
     '''

@@ -8,11 +8,13 @@ import scrapy
 # import datetime
 # import sys
 
-
 class AbsJKSGPSpider(scrapy.spiders.Spider):
     # page_idens = []
     check_idens = []
     xpath_idens = []
+
+    # 当对比值对比失败的时候想这个全局对象中写入对比信息
+    output_idenerr = []
 
     name = ""
     allowed_domains = ["basic.10jqka.com.cn"]
@@ -104,6 +106,7 @@ class AbsJKSGPSpider(scrapy.spiders.Spider):
         for siden in self.getPageIdens(response) :
             # print(type(check_idens[0].encode('utf-8')))
             if siden not in check_idens :
+                self.output_idenerr.append(siden)
                 result = False
 
         return result
@@ -111,5 +114,5 @@ class AbsJKSGPSpider(scrapy.spiders.Spider):
     # 标识检查函数，如果比对的页面标识出现变化这个函数会直接raise 一个异常信息到页面上
     def checkIden(self, response) :
         if not(self.compIdens(response)) :
-            raise Exception("ERROR::数据抓取时检测到页面校对区域发生变化，为了保险起见中断了爬虫的继续运行。 CODE::202001282318")
+            raise Exception("ERROR::数据抓取时检测到页面校对区域发生变化，为了保险起见中断了爬虫的继续运行。" + self.output_idenerr[0] + " CODE::202001282318")
 

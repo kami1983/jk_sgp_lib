@@ -2,9 +2,14 @@
 
 Make Scrapy easier and more versatile.
 
+## v1.2.1 
+
+* 当页面验证出错的时候，新增对比值方便调试。
+* 修正ITEM写入的时区设置，可以通过 settings.py 的 TIMEZONE 配置段落进行改变，默认是 'Asia/Shanghai' 。
+
 ## v1.1.8 修正早期版本部分BUG
 
-这组API提供，Items、Pipelines、Spiders 三组类库，用来辅助Scrapy 的上层功能实现，帮助爬虫完成页面的区域校对、帮助Pipeline 对Mysql 的直接输出
+* 这组API提供，Items、Pipelines、Spiders 三组类库，用来辅助Scrapy 的上层功能实现，帮助爬虫完成页面的区域校对、帮助Pipeline 对Mysql 的直接输出
 
 ## Install 安装
 
@@ -70,6 +75,8 @@ MYSQL_PORT = 3306
 MYSQL_USER = '数据库用户'
 MYSQL_PASSWORD = '数据库密码'
 
+# TIMEZONE = 'Asia/Shanghai' # 时区设置，这里决定了createtime、updatetime 的时间输入。
+
 # 定义 YourPipeline 为输出管道，数据库配置好后，会自动建表填充数据，要注意有建表权限。
 ITEM_PIPELINES = {
     'cpi_extract.pipelines.YourPipeline': 1000,
@@ -99,9 +106,18 @@ ITEM_PIPELINES = {
 * 头部需要引入如下内容：
 ```
 # 注意如果需要数据库直接写入支持 YourItem 应该是 CJKSGPItem 类的子类
+
+import sys
+import scrapy
+
 from ..items import YourItem 
 # 引入 AbsJKSGPSpider 抽象类
 from jk_sgp_lib.spiders.AbsJKSGPSpider import AbsJKSGPSpider
+
+# 如果涉及到中午所以需要处理中文编码，否则可能造成错误
+reload(sys)                      # 
+sys.setdefaultencoding('utf-8')  # 设置 'utf-8'  
+
 ```
 * 在spiders 目录下创建爬虫文件，比如 yourspider.py
 ```
