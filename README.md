@@ -65,7 +65,7 @@ MSG_CONFIG = {
 ## Install 安装
 
 * 安装最新版本：`pip install jk-sgp-lib --upgrade --user`
-* 仅安装1.1.8版本：`pip install jk-sgp-lib==1.2.1 --upgrade --user`
+* 例如仅安装1.2.1版本：`pip install jk-sgp-lib==1.2.1 --upgrade --user`
 
 ## 使用方法
 
