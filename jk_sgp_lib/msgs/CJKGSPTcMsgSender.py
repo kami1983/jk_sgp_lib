@@ -24,35 +24,42 @@ class CJKGSPTcMsgSender(object) :
     }
     '''
 
-    @classmethod
-    def SetConfig(cls) :
+    # 短信消息的配置信息对象
+    msg_config = {}
+
+    def __init__(self, msg_config) :
+        self.msg_config = msg_config
+
+    # @classmethod
+    def setConfig(self) :
         '''
         设置配置参数
         '''
-    
-        msg_config = cls.GasConfig()
-        if "tencent" not in msg_config.keys() :
-            return cls
+
+        if not self.hasConfig() :
+            return self
+
+        msg_config = self.getConfig()
 
         # 从项目的配置文件中读取相应的参数
         # msg_config = crawler.settings.get("MSG_CONFIG", '{}')
-        cls.appid = msg_config['tencent']['appid']
-        cls.appkey = msg_config['tencent']['appkey']
-        cls.phone_numbers = msg_config['tencent']['phone_numbers']
-        cls.template_id = msg_config['tencent']['template_id']
-        cls.sms_sign = msg_config['tencent']['sms_sign']
-        cls.sms_zone = msg_config['tencent']['sms_zone']
+        self.appid = msg_config['tencent']['appid']
+        self.appkey = msg_config['tencent']['appkey']
+        self.phone_numbers = msg_config['tencent']['phone_numbers']
+        self.template_id = msg_config['tencent']['template_id']
+        self.sms_sign = msg_config['tencent']['sms_sign']
+        self.sms_zone = msg_config['tencent']['sms_zone']
 
-        return cls()
+        return self
     
-    @classmethod
-    def HasConfig(cls) :
+    # @classmethod
+    def hasConfig(self) :
         '''
         判断配置参数是否存在
         @return boolean
         '''
         # 参数赋值
-        msg_config = cls.GasConfig()
+        msg_config = self.getConfig()
 
         if "tencent" not in msg_config.keys() :
             return False
@@ -68,8 +75,8 @@ class CJKGSPTcMsgSender(object) :
         
         return True
 
-    @classmethod
-    def GasConfig(cls) :
+    # @classmethod
+    def getConfig(self) :
         # msg_config = {
         #     'tencent' : {
         #         # 短信应用 SDK AppID
@@ -86,8 +93,8 @@ class CJKGSPTcMsgSender(object) :
         #         'sms_zone' : '86',
         #     }
         # } 
-        msg_config = crawler.settings.get("MSG_CONFIG", {})
-        return msg_config
+        # msg_config = crawler.settings.get("MSG_CONFIG", {})
+        return self.msg_config
 
     def sendMsg(self, params) :
         '''
@@ -95,7 +102,7 @@ class CJKGSPTcMsgSender(object) :
         '''
         
         # 参数赋值
-        self.SetConfig()
+        self.setConfig()
         # print('------ A')
         # print(self.appkey)
         # print('------ B')

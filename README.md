@@ -2,6 +2,33 @@
 
 Make Scrapy easier and more versatile.
 
+## v1.4.1
+
+* 为了提高数据库录入管道类的可扩展性，升级了 AbsJKSGPPipelineOfMysqlSaver 
+```
+# 获取执行SQL 语句主体的方法
+getExecSqlstr(item, spider) 
+
+# 获取填充对应SQL 值的方法，这个方法返回的是一个list
+getExecSqlvalues(item, spider) 
+
+# 获取当前系统时间的方法，这个也单独做了提取
+getCurrentTime()
+
+# SQL 语句执行的过程大致为：
+self.dbcursor.execute(getExecSqlstr(item, spider), getExecSqlvalues(item, spider))
+
+```
+
+## v1.3.4
+
+* 修正1.3.3 信息发送格式错误的BUG。
+
+
+## v1.3.3
+
+* 修正1.3.1 管理员短信通知无法发送的BUG。
+
 ## v1.3.1
 
 * 新增API CJKGSPTcMsgSender 用来发送腾讯的短信消息，需要 `pip install qcloudsms_py --user ` 类库的支持。

@@ -117,9 +117,11 @@ class AbsJKSGPSpider(scrapy.spiders.Spider):
     def checkIden(self, response) :
         if not(self.compIdens(response)) :
             # 检查是否存在短信消息类，如果存在会发送一条消息出去通知保留的管理员账号
-            if CJKGSPTcMsgSender.HasConfig() :
-                # 如果配置存在则尝试发送短消息
-                msg = CJKGSPTcMsgSender()
-                msg.sendMsg([self.name + ":爬虫警报"])
-            raise Exception("ERROR::数据抓取时检测到页面校对区域发生变化，为了保险起见中断了爬虫的继续运行。" + self.output_idenerr[0] + " CODE::202001282318")
+            # 如果配置存在则尝试发送短消息，并通过setting 传递配置信息
+            msg = CJKGSPTcMsgSender(self.settings.get('MSG_CONFIG', {}))
+            msgresult = '-NOT-DOING-'
+            if msg.hasConfig() :
+                msgresult = msg.sendMsg([self.name + ":爬虫警报"])
+                # print(msgresult)
+            raise Exception("ERROR::数据抓取时检测到页面校对区域发生变化，为了保险起见中断了爬虫的继续运行。" + self.output_idenerr[0] + " ADMIN_NOFIFY::" + str(msgresult) + " CODE::202001282318")
 

@@ -87,35 +87,12 @@ class AbsJKSGPPipelineOfMysqlSaver(object):
         if not(isinstance(item, CJKSGPItem)) :
             raise Exception('item 参数必须为 CJKSGPItem 类或其子类，否则会导致数据库插入失败！')
 
-        currenttime = datetime.datetime.now(pytz.timezone(self.TIMEZONE)).strftime('%Y-%m-%d %H:%M:%S')
-        #currenttime = datetime.datetime.now(-8).strftime('%Y-%m-%d %H:%M:%S')
-        # currenttime = time.strftime("%Y-%m-%d %H:%M:%S") 
-
+        
         # 要执行的SQL 语句
-        execsql = '''
-        INSERT INTO {}
-(`signkey`, `groupname`, `status`, `createtime`, `updatetime`, `datadetail`) 
-VALUES (%s, %s, %s, %s, %s, %s) 
-ON DUPLICATE KEY UPDATE 
-`updatetime`=%s, 
-`status`= %s, 
-`datadetail`= %s;
-        '''.format(self.getScrapySaverTablename())
+        execsql = self.getExecSqlstr(item, spider)
 
         # 对应执行SQL 语句的值
-        sqlvalues = [
-            item['t_signkey'],
-            item['t_group'],
-            item['t_status'],
-            currenttime,
-            currenttime,
-            item.getJsonStr(),
-
-            currenttime,
-            item['t_status'],
-            item.getJsonStr(),
-        ]
-
+        sqlvalues = self.getExecSqlvalues(item, spider)
         
         # self.dbcursor.execute(execsql)
         count = self.dbcursor.execute(execsql, sqlvalues)
@@ -128,6 +105,44 @@ ON DUPLICATE KEY UPDATE
         # print("A #############")
         self.afterProcessItem(item, spider, count)
         return item
+
+    def getExecSqlstr(self, item, spider) :
+        '''
+        获取要执行的SQL 语句
+        '''
+        return '''
+        INSERT INTO {}
+(`signkey`, `groupname`, `status`, `createtime`, `updatetime`, `datadetail`) 
+VALUES (%s, %s, %s, %s, %s, %s) 
+ON DUPLICATE KEY UPDATE 
+`updatetime`=%s, 
+`status`= %s, 
+`datadetail`= %s;
+        '''.format(self.getScrapySaverTablename())
+
+    def getExecSqlvalues(self, item, spider) :
+        '''
+        获取要执行SQL 预计的填充值
+        '''
+        currenttime = self.getCurrentTime()
+        return [
+            item['t_signkey'],
+            item['t_group'],
+            item['t_status'],
+            currenttime,
+            currenttime,
+            item.getJsonStr(),
+
+            currenttime,
+            item['t_status'],
+            item.getJsonStr(),
+        ]
+    
+    def getCurrentTime(self):
+        '''
+        获取当前系统时间
+        '''
+        return datetime.datetime.now(pytz.timezone(self.TIMEZONE)).strftime('%Y-%m-%d %H:%M:%S')
 
     def beforeProcessItem(self, item, spider):
         raise NotImplementedError('需要实现：beforeProcessItem (item, spider) 方法')
