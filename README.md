@@ -2,7 +2,8 @@
 
 Make Scrapy easier and more versatile.
 
-## v1.4.1
+## Version 版本记录
+### v1.4.1
 
 * 为了提高数据库录入管道类的可扩展性，升级了 AbsJKSGPPipelineOfMysqlSaver 
 ```
@@ -20,16 +21,16 @@ self.dbcursor.execute(getExecSqlstr(item, spider), getExecSqlvalues(item, spider
 
 ```
 
-## v1.3.4
+### v1.3.4
 
 * 修正1.3.3 信息发送格式错误的BUG。
 
 
-## v1.3.3
+### v1.3.3
 
 * 修正1.3.1 管理员短信通知无法发送的BUG。
 
-## v1.3.1
+### v1.3.1
 
 * 新增API CJKGSPTcMsgSender 用来发送腾讯的短信消息，需要 `pip install qcloudsms_py --user ` 类库的支持。
 * 新增短信发送配置段落
@@ -53,16 +54,19 @@ MSG_CONFIG = {
 }
 ```
 
-## v1.2.1
+### v1.2.1
 
 * 当页面验证出错的时候，新增对比值方便调试。
 * 修正ITEM写入的时区设置，可以通过 settings.py 的 TIMEZONE 配置段落进行改变，默认是 'Asia/Shanghai' 。
 
-## v1.1.8 修正早期版本部分BUG
+### v1.1.8 
 
+* 修正早期版本部分BUG
 * 这组API提供，Items、Pipelines、Spiders 三组类库，用来辅助Scrapy 的上层功能实现，帮助爬虫完成页面的区域校对、帮助Pipeline 对Mysql 的直接输出
 
 ## Install 安装
+
+### 通过pip 命令直接安装
 
 * 安装最新版本：`pip install jk-sgp-lib --upgrade --user`
 * 例如仅安装1.2.1版本：`pip install jk-sgp-lib==1.2.1 --upgrade --user`
