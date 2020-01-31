@@ -8,6 +8,8 @@ import scrapy
 # import datetime
 # import sys
 
+from jk_sgp_lib.msgs.CJKGSPTcMsgSender import CJKGSPTcMsgSender
+
 class AbsJKSGPSpider(scrapy.spiders.Spider):
     # page_idens = []
     check_idens = []
@@ -114,5 +116,10 @@ class AbsJKSGPSpider(scrapy.spiders.Spider):
     # 标识检查函数，如果比对的页面标识出现变化这个函数会直接raise 一个异常信息到页面上
     def checkIden(self, response) :
         if not(self.compIdens(response)) :
+            # 检查是否存在短信消息类，如果存在会发送一条消息出去通知保留的管理员账号
+            if CJKGSPTcMsgSender.HasConfig() :
+                # 如果配置存在则尝试发送短消息
+                msg = CJKGSPTcMsgSender()
+                msg.sendMsg([self.name + ":爬虫警报"])
             raise Exception("ERROR::数据抓取时检测到页面校对区域发生变化，为了保险起见中断了爬虫的继续运行。" + self.output_idenerr[0] + " CODE::202001282318")
 

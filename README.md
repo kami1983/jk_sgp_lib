@@ -2,7 +2,31 @@
 
 Make Scrapy easier and more versatile.
 
-## v1.2.1 
+## v1.3.1
+
+* 新增API CJKGSPTcMsgSender 用来发送腾讯的短信消息，需要 `pip install qcloudsms_py --user ` 类库的支持。
+* 新增短信发送配置段落
+```
+# 短信发送配置段落
+MSG_CONFIG = {
+    'tencent' : {
+        # 短信应用 SDK AppID
+        'appid' : '1400XXXXX' ,
+        # 短信应用 SDK AppKey
+        'appkey' : "554d1de0bXXXXXXXXXXXXXXXXX" ,
+        # 需要发送短信的手机号码
+        'phone_numbers' : ['182XXXXXXXX'] ,
+        # 短信模板ID，需要在短信控制台中申请
+        'template_id' : '142678' ,
+        # 签名
+        'sms_sign' : 'KAMI1983',
+        # 区域
+        'sms_zone' : '86'
+    }
+}
+```
+
+## v1.2.1
 
 * 当页面验证出错的时候，新增对比值方便调试。
 * 修正ITEM写入的时区设置，可以通过 settings.py 的 TIMEZONE 配置段落进行改变，默认是 'Asia/Shanghai' 。
@@ -14,7 +38,7 @@ Make Scrapy easier and more versatile.
 ## Install 安装
 
 * 安装最新版本：`pip install jk-sgp-lib --upgrade --user`
-* 仅安装1.1.8版本：`pip install jk-sgp-lib==1.1.8 --upgrade --user`
+* 仅安装1.1.8版本：`pip install jk-sgp-lib==1.2.1 --upgrade --user`
 
 ## 使用方法
 
