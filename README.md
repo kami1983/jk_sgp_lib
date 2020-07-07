@@ -3,6 +3,16 @@
 Make Scrapy easier and more versatile.
 
 ## Version 版本记录
+
+### v1.5.1
+* 升级了 AbsJKSGPPipelineOfMysqlSaver process_item 方法调用时会调用到检查方法 isToDo(item, spider)
+* 如果 isToDo( ) 返回true 那么程序继续执行，返回false，这时候不会做任何执行 beforeProcessItem afterProcessItem 均不会调用，process_item 将立即返回item 对象。 
+* 使用上可以覆盖这个方法，让管道有选择的处理item
+```
+# 默认上这个方法直接返回True
+def isToDo(self, item, spider):
+        return True
+```
 ### v1.4.1
 
 * 为了提高数据库录入管道类的可扩展性，升级了 AbsJKSGPPipelineOfMysqlSaver 

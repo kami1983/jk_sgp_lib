@@ -80,8 +80,12 @@ class AbsJKSGPPipelineOfMysqlSaver(object):
         1、触发 process_item 调用前的接口方法 beforeProcessItem 方法
         2、生成SQL 语句并且向数据库进行 commit 操作
         3、触发 process_item 返回值调用前的 afterProcessItem 方法
-        
         '''
+
+        if False == self.isToDo(item, spider) :
+            # 如果标记为不执行那么直接返回item 对象
+            return item
+
         self.beforeProcessItem(item, spider)
         
         if not(isinstance(item, CJKSGPItem)) :
@@ -105,6 +109,15 @@ class AbsJKSGPPipelineOfMysqlSaver(object):
         # print("A #############")
         self.afterProcessItem(item, spider, count)
         return item
+
+    def isToDo(self, item, spider):
+        '''
+        是否处理ITEM 的标记方法。
+        1、当方法返回True 时程序继续运行会执行MSYQL 调用。
+        2、当方法返回False 是程序直接返回item 对象并退出，这时候不会做任何执行 beforeProcessItem afterProcessItem 均不会调用
+        @return boolean
+        '''
+        return True
 
     def getExecSqlstr(self, item, spider) :
         '''

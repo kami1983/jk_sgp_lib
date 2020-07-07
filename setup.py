@@ -4,8 +4,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="jk-sgp-lib", # Replace with your own username
-    version="1.4.1",
+    name="jk-sgp-lib", 
+    version="1.5.1",
     author="kami1983",
     author_email="kami@cancanyou.com",
     description="Make Scrapy easier and more versatile.",
