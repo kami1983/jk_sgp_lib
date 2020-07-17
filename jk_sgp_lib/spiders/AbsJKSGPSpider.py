@@ -35,15 +35,32 @@ class AbsJKSGPSpider(scrapy.spiders.Spider):
 
         self.initPageIdenInfo()
 
-    def start_requests(self):
+    # def start_requests(self):
 
+    #     '''
+    #     开始请求的方法：
+    #     1、调用 appendCheckInfo(xpath, string) 添加要核验的目标值和目标区域
+    #     '''
+
+    #     for url in self.start_urls:
+    #         yield scrapy.Request(url=url,method='GET',callback=self.parse_request)
+
+    def start_requests(self):
         '''
         开始请求的方法：
         1、调用 appendCheckInfo(xpath, string) 添加要核验的目标值和目标区域
         '''
-
-        for url in self.start_urls:
-            yield scrapy.Request(url=url,method='GET',callback=self.parse_request)
+        for param in self.start_urls:
+            if False == isinstance(param,dict):
+                request_param = {"url":param,"method":"GET","callback":self.parse_request}
+            else :
+                request_param = param
+                if False == request_param.has_key("method") :
+                    request_param["method"] = "GET"
+                if False == request_param.has_key("callback") :
+                    request_param["callback"] = self.parse_request
+            
+            yield scrapy.Request(**request_param)
 
     # def parse(self, response):
     #     pass

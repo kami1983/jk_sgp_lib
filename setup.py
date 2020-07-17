@@ -1,11 +1,12 @@
+import io
 import setuptools
 
-with open("README.md", "r") as fh:
+with io.open("README.md", mode='r', encoding='utf-8') as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="jk-sgp-lib", 
-    version="1.5.1",
+    version="1.6.1",
     author="kami1983",
     author_email="kami@cancanyou.com",
     description="Make Scrapy easier and more versatile.",

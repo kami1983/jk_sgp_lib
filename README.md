@@ -4,6 +4,19 @@ Make Scrapy easier and more versatile.
 
 ## Version 版本记录
 
+### v1.6.1
+* 升级 `AbsJKSGPSpider` 类，让其支持 `start_urls` 的字典输入方式，从而实现`meta` 等参数的定义形式传入。
+
+### v1.5.2
+* 升级setup.py 文件新增 `encoding='UTF-8'` 防止Windows上安装出错。
+```
+import io
+import setuptools
+
+with io.open("README.md", mode='r', encoding='utf-8') as fh:
+    long_description = fh.read()
+```
+
 ### v1.5.1
 * 升级了 AbsJKSGPPipelineOfMysqlSaver process_item 方法调用时会调用到检查方法 isToDo(item, spider)
 * 如果 isToDo( ) 返回true 那么程序继续执行，返回false，这时候不会做任何执行 beforeProcessItem afterProcessItem 均不会调用，process_item 将立即返回item 对象。 
